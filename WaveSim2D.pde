@@ -94,8 +94,8 @@ void draw() {
   targetX = clamp(round(map(mouseX, 0, width - 1, 0, w - 1)), 0, w - 1);
   targetY = clamp(round(map(mouseY, 0, height - 1, 0, h - 1)), 0, h - 1);
   if(drawHud) {
-    text("FPS: " + frameRate + "\nTime: " + time + "\nFrame: " + frame + "\nBrightness: x" + brightness, 5, 5);
-    text("Light Simulator\nPixHeight: " + pixHeight[targetX][targetY] + "\nPixVel: " + pixVel[targetX][targetY] + "\nPixMass: " + pixMass[targetX][targetY] + "\nAccumulated Light: " + accumLight[targetX][targetY], mouseX + 5, mouseY + 5);
+    text("Light Simulator\nFPS: " + frameRate + "\nTime: " + time + "\nFrame: " + frame + "\nBrightness: x" + brightness, 5, 5);
+    text("PixHeight: " + pixHeight[targetX][targetY] + "\nPixVel: " + pixVel[targetX][targetY] + "\nPixMass: " + pixMass[targetX][targetY] + "\nAccumulated Light: " + accumLight[targetX][targetY], mouseX + 5, mouseY + 5);
   }
 }
 
@@ -153,7 +153,7 @@ void init() {
       accumLight[i][j] = 0.0;
       //pixMass[i][j] = 1.0;
       pixMass[i][j] = (i == 0 || i == w - 1 || j == 0 || j == h - 1) ? Float.POSITIVE_INFINITY : 1.0;
-      if(sqrt(sq(i - w / 2) + sq(j - h / 2)) < 12) pixMass[i][j] = 2;
+      //if(sqrt(sq(i - w / 2) + sq(j - h / 2)) < 12) pixMass[i][j] = 2;
     }
   }
 }
