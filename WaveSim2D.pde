@@ -35,14 +35,14 @@ void draw() {
       pixHeight[i][j] += pixVel[i][j];
       accumLight[i][j] += abs(pixHeight[i][j]) * ACCUM_EXPOSURE;
       color lightColor = drawAccum ? color(accumLight[i][j] * 255) : color(abs(pixHeight[i][j]) * brightness * 255); // Absolute light coloring
-      if(pixMass[i][j] < 1.0) {
-        pg.stroke(red(lightColor) + 50, green(lightColor) + 60, blue(lightColor) + 70); // Glass 
+      if(pixMass[i][j] > 1.0 && pixMass[i][j] <= 1.3333333) {
+         pg.stroke(red(lightColor), green(lightColor), blue(lightColor) + 95);
       } else {
         if(pixMass[i][j] == Float.POSITIVE_INFINITY) {
           pg.stroke(63);
         } else {
-          if(pixMass[i][j] > 1.0 && pixMass[i][j] < Float.POSITIVE_INFINITY) {
-            pg.stroke(red(lightColor), green(lightColor), blue(lightColor) + 95);
+          if(pixMass[i][j] > 1.3333333 && pixMass[i][j] < Float.POSITIVE_INFINITY) {
+            pg.stroke(red(lightColor) + 50, green(lightColor) + 60, blue(lightColor) + 70); // Glass
           } else {
             pg.stroke(lightColor);
           }
@@ -69,24 +69,30 @@ void draw() {
   if(mousePressed) {
     if(mouseButton == LEFT) {
       switch(tool) {
-        case 0:
+        case 0:  // Clear Tool
         pixMass[targetX][targetY] = 1.0;
         break;
-        case 1:
+        case 1:  // Wave Tool
         pixHeight[targetX][targetY] = 1.0;
         break;
-        case 2:
+        case 2:  // Wall Tool
         pixHeight[targetX][targetY] = 0.0;
         pixVel[targetX][targetY] = 0.0;
         pixMass[targetX][targetY] = Float.POSITIVE_INFINITY;
         break;
-        case 3:
-        pixMass[targetX][targetY] = 0.5;
+        case 3:  // Water (n = 1.3333333)
+        pixMass[targetX][targetY] = 0.75;
         break;
-        case 4:
-        pixMass[targetX][targetY] = 2;
+        case 4:  // Glass (n = 1.5)
+        pixMass[targetX][targetY] = 0.6666667;
+        break;
+        case 5:  // Diamond (n = 2.417)
+        pixMass[targetX][targetY] = 0.4137360;
         break;
       }
+    }
+    if(mouseButton == RIGHT) {
+      pixMass[targetX][targetY] = 1.0;
     }
   }
   //pixHeight[w / 4][h / 4] = sin(time * TWO_PI);
