@@ -1,10 +1,10 @@
-int w = 64, h = 64;
+int w = 128, h = 128;
 float[][] pixHeight = new float[w][h];
 float[][] pixVel = new float[w][h];
 float[][] pixMass = new float[w][h];
 
 float[][] accumLight = new float[w][h];
-static final float ACCUM_EXPOSURE = 0.0125;
+static final float ACCUM_EXPOSURE = 0.005;
 boolean drawAccum = false;
 
 PGraphics pg;
@@ -35,16 +35,20 @@ void draw() {
       pixHeight[i][j] += pixVel[i][j];
       accumLight[i][j] += abs(pixHeight[i][j]) * ACCUM_EXPOSURE;
       color lightColor = drawAccum ? color(accumLight[i][j] * 255) : color(abs(pixHeight[i][j]) * brightness * 255); // Absolute light coloring
-      if(pixMass[i][j] > 1.0 && pixMass[i][j] <= 1.3333333) {
-         pg.stroke(red(lightColor), green(lightColor), blue(lightColor) + 95);
+      if(pixMass[i][j] >= 0.75 && pixMass[i][j] != 1.0 && pixMass[i][j] != Float.POSITIVE_INFINITY) {
+         pg.stroke(lightColor, lightColor, lightColor + 95);
       } else {
         if(pixMass[i][j] == Float.POSITIVE_INFINITY) {
           pg.stroke(63);
         } else {
-          if(pixMass[i][j] > 1.3333333 && pixMass[i][j] < Float.POSITIVE_INFINITY) {
-            pg.stroke(red(lightColor) + 50, green(lightColor) + 60, blue(lightColor) + 70); // Glass
+          if(pixMass[i][j] <= 0.6666667) {
+            pg.stroke(lightColor + 50, lightColor + 60, lightColor + 70); // Glass
           } else {
-            pg.stroke(lightColor);
+            if(pixMass[i][j] < 0.0) {
+              pg.stroke(lightColor + 85, lightColor, lightColor + 102);
+            } else {
+              pg.stroke(lightColor);
+            }
           }
         }
       }
@@ -65,7 +69,7 @@ void draw() {
   pg.endDraw();
   frame++;
   time += 1.0 / frameRate;
-  //pixHeight[w / 4][h / 2] = sin(time * 0.8 * TWO_PI) * 12;
+  pixHeight[w / 2][h / 2] = sin(time * TWO_PI) * 10;
   if(mousePressed) {
     if(mouseButton == LEFT) {
       switch(tool) {
@@ -100,7 +104,7 @@ void draw() {
   targetX = clamp(round(map(mouseX, 0, width - 1, 0, w - 1)), 0, w - 1);
   targetY = clamp(round(map(mouseY, 0, height - 1, 0, h - 1)), 0, h - 1);
   if(drawHud) {
-    text("Light Simulator\nFPS: " + frameRate + "\nTime: " + time + "\nFrame: " + frame + "\nBrightness: x" + brightness, 5, 5);
+    text("Light Simulator Alpha\nFPS: " + frameRate + "\nTime: " + time + "\nFrame: " + frame + "\nBrightness: x" + brightness, 5, 5);
     text("PixHeight: " + pixHeight[targetX][targetY] + "\nPixVel: " + pixVel[targetX][targetY] + "\nPixMass: " + pixMass[targetX][targetY] + "\nAccumulated Light: " + accumLight[targetX][targetY], mouseX + 5, mouseY + 5);
   }
 }
@@ -134,6 +138,9 @@ void keyPressed() {
     case '4':
     tool = 4;
     break;
+    case '5':
+    tool = 5;
+    break;
     case '+':
     brightness *= 2;
     break;
@@ -159,7 +166,7 @@ void init() {
       accumLight[i][j] = 0.0;
       //pixMass[i][j] = 1.0;
       pixMass[i][j] = (i == 0 || i == w - 1 || j == 0 || j == h - 1) ? Float.POSITIVE_INFINITY : 1.0;
-      //if(sqrt(sq(i - w / 2) + sq(j - h / 2)) < 12) pixMass[i][j] = 2;
+      //if(sqrt(sq(i - w / 2) + sq(j - h / 2)) < 12 && i < w / 2) pixMass[i][j] = 0.6666667;
     }
   }
 }
