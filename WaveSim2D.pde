@@ -21,14 +21,16 @@ boolean drawHud = true;
 
 void setup() {
   noSmooth();
-  surface.setResizable(false);
-  size(800, 800);
+  size(800, 800, P2D);
+  surface.setResizable(true);
+  surface.setTitle("Light Simulator Alpha");
   pg = createGraphics(w, h);
   init();
   textAlign(LEFT, TOP);
 }
 
 void draw() {
+  background(0);
   pg.beginDraw();
   for(int j = 0; j < h; j++) {
     for(int i = 0; i < w; i++) {
@@ -44,17 +46,13 @@ void draw() {
           if(pixMass[i][j] <= 0.6666667) {
             pg.stroke(lightColor + 50, lightColor + 60, lightColor + 70); // Glass
           } else {
-            if(pixMass[i][j] < 0.0) {
-              pg.stroke(lightColor + 85, lightColor, lightColor + 102);
-            } else {
-              pg.stroke(lightColor);
-            }
+            pg.stroke(lightColor);
           }
         }
       }
       pg.point(i, j);
-      if(drawHud) {
-        pg.stroke(255, 0, 0);
+      if(drawHud && mouseX >= (width - height) / 2.0 && mouseX <= (width + height) / 2.0) {
+        if(mousePressed) pg.stroke(255, 255, 0); else pg.stroke(255, 0, 0);
         pg.point(targetX, targetY);
       }
     }
@@ -70,7 +68,7 @@ void draw() {
   frame++;
   time += 1.0 / frameRate;
   pixHeight[w / 2][h / 2] = sin(time * TWO_PI) * 10;
-  if(mousePressed) {
+  if(mousePressed && mouseX >= (width - height) / 2.0 && mouseX <= (width + height) / 2.0) {
     if(mouseButton == LEFT) {
       switch(tool) {
         case 0:  // Clear Tool
@@ -100,12 +98,12 @@ void draw() {
     }
   }
   //pixHeight[w / 4][h / 4] = sin(time * TWO_PI);
-  image(pg, 0, 0, width, height);
-  targetX = clamp(round(map(mouseX, 0, width - 1, 0, w - 1)), 0, w - 1);
+  image(pg, (width - height) / 2.0, 0, height, height);
+  targetX = clamp(round(map(mouseX, (width - height) / 2.0, (width + height) / 2.0, 0, w - 1)), 0, w - 1);
   targetY = clamp(round(map(mouseY, 0, height - 1, 0, h - 1)), 0, h - 1);
   if(drawHud) {
     text("Light Simulator Alpha\nFPS: " + frameRate + "\nTime: " + time + "\nFrame: " + frame + "\nBrightness: x" + brightness, 5, 5);
-    text("PixHeight: " + pixHeight[targetX][targetY] + "\nPixVel: " + pixVel[targetX][targetY] + "\nPixMass: " + pixMass[targetX][targetY] + "\nAccumulated Light: " + accumLight[targetX][targetY], mouseX + 5, mouseY + 5);
+    if(mouseX >= (width - height) / 2.0 && mouseX <= (width + height) / 2.0) text("Coords:   X:" + targetX + "   Y:" + targetY + "\nPixHeight: " + pixHeight[targetX][targetY] + "\nPixVel: " + pixVel[targetX][targetY] + "\nPixMass: " + pixMass[targetX][targetY] + "\nAccumulated Light: " + accumLight[targetX][targetY], mouseX + 5, mouseY + 5);
   }
 }
 
