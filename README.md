@@ -5,7 +5,7 @@ Controls:
  · H = Show/Hide HUD
  · + - Increase Brightness
  · - - Decrease Brightness
- · 0-4 - Tools
+ · 0-1 - Tools
 
  Tools:
  0 - Clear Tool
