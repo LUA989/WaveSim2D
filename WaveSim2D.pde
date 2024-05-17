@@ -1,4 +1,4 @@
-int w = 128, h = 128;
+int w = 96, h = 96;
 float[][] pixHeight = new float[w][h];
 float[][] pixVel = new float[w][h];
 float[][] pixMass = new float[w][h];
@@ -20,8 +20,8 @@ int tool = 1;
 boolean drawHud = true;
 
 void setup() {
-  noSmooth();
   size(800, 800, P2D);
+  noSmooth();
   surface.setResizable(true);
   surface.setTitle("Light Simulator Alpha");
   pg = createGraphics(w, h);
@@ -67,7 +67,7 @@ void draw() {
   pg.endDraw();
   frame++;
   time += 1.0 / frameRate;
-  pixHeight[w / 2][h / 2] = sin(time * TWO_PI) * 10;
+  //pixHeight[w / 2][h / 2] = sin(time * TWO_PI) * 10;
   if(mousePressed && mouseX >= (width - height) / 2.0 && mouseX <= (width + height) / 2.0) {
     if(mouseButton == LEFT) {
       switch(tool) {
